@@ -1,0 +1,16 @@
+M=4
+N=4698
+fileID = fopen('pku_train_vec_seq.txt','r');
+seq=fscanf(fileID,'%d,')
+seq = horzcat(seq',[42,42])
+seq=reshape(seq, [36529, 50])
+
+fileID = fopen('pku_train_states.txt','r');
+state=fscanf(fileID,'%s  ')
+state=char(state)
+state = horzcat(state,['S','S'])
+rstate=reshape(state, [ 50,36529])
+state=rstate'
+
+[t,e]=hmmestimate(seq,state,'Statenames',['B','M','E','S'],'Pseudoemissions',ones(M,N)*1e-50)
+save te
