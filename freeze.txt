@@ -1,2 +1,3 @@
 sklearn_crfsuite
 scikit-learn
+elasticsearch==6

@@ -224,26 +224,31 @@ if MODE == 3:
     with codecs.open('plain/pku_test.utf8', 'r', encoding='utf8') as ft:
         with codecs.open('plain/pku_test_states.txt', 'r', encoding='utf8') as fs:
             with codecs.open('model/pku_train_crfmodel.pkl', 'rb') as fm:
-                sm = fm.read()
-                crf = pickle.loads(sm)
-                lines = ft.readlines()
-                states = fs.readlines()
-                X = []
-                counter = 0
-                for line in lines:
-                    line = line.strip()
-                    X.append([getFeaturesDict(line, i) for i in range(len(line))])
-                    counter += 1
-                    if counter % 100 == 0 and counter != 0:
-                        print('.')
-                y = []
-                for state in states:
-                    state = state.strip()
-                    y.append(list(state))
-                for i in range(len(X)):
-                    assert len(X[i]) == len(y[i])
-                yp = crf.predict(X)
-                m = metrics.flat_classification_report(
-                    y, yp, labels=list("BMES"), digits=4
-                )
-                print(m)
+                with codecs.open('baseline/pku_test_crf_states.txt', 'w') as fp:
+                    sm = fm.read()
+                    crf = pickle.loads(sm)
+                    lines = ft.readlines()
+                    states = fs.readlines()
+                    X = []
+                    counter = 0
+                    for line in lines:
+                        line = line.strip()
+                        X.append([getFeaturesDict(line, i) for i in range(len(line))])
+                        counter += 1
+                        if counter % 100 == 0 and counter != 0:
+                            print('.')
+                    y = []
+                    for state in states:
+                        state = state.strip()
+                        y.append(list(state))
+                    for i in range(len(X)):
+                        assert len(X[i]) == len(y[i])
+                    yp = crf.predict(X)
+                    for sl in yp:
+                        for s in sl:
+                            fp.write(s)
+                        fp.write('\n')
+                    m = metrics.flat_classification_report(
+                        y, yp, labels=list("BMES"), digits=4
+                    )
+                    print(m)
