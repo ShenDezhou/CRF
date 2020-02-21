@@ -6,6 +6,7 @@ import string
 from sklearn_crfsuite import CRF
 from sklearn_crfsuite import metrics
 
+TRANSFER_LEARNING = True
 chars = []
 
 with codecs.open('pku_dic/pku_dict.utf8', 'r', encoding='utf8') as f:
@@ -90,10 +91,14 @@ def getCharType(ch):
         if len(types) > 0:
             break
 
+    if TRANSFER_LEARNING and len(types) == 0:
+        return str(len(dictofdicts) + len(extradicts) - 1)
+
     assert len(types) == 1 or len(types) == 2, "{} {} {}".format(ch, len(types), types)
     # onehot = [0] * (len(dictofdicts) + len(extradicts))
     # for i in types:
     #     onehot[i] = 1
+
     return str(types[0])
 
 
@@ -155,7 +160,7 @@ def getFeaturesDict(sentence, i):
     return featuresdic
 
 
-MODE = 3
+MODE = 4
 
 if MODE == 1:
     with codecs.open('plain/pku_training.utf8', 'r', encoding='utf8') as ft:
@@ -233,6 +238,39 @@ if MODE == 3:
                     counter = 0
                     for line in lines:
                         line = line.strip()
+                        X.append([getFeaturesDict(line, i) for i in range(len(line))])
+                        counter += 1
+                        if counter % 100 == 0 and counter != 0:
+                            print('.')
+                    y = []
+                    for state in states:
+                        state = state.strip()
+                        y.append(list(state))
+                    for i in range(len(X)):
+                        assert len(X[i]) == len(y[i])
+                    yp = crf.predict(X)
+                    for sl in yp:
+                        for s in sl:
+                            fp.write(s)
+                        fp.write('\n')
+                    m = metrics.flat_classification_report(
+                        y, yp, labels=list("BMES"), digits=4
+                    )
+                    print(m)
+
+if MODE == 4:
+    with codecs.open('plain/contract_train.utf8', 'r', encoding='utf8') as ft:
+        with codecs.open('plain/contract_train_states.txt', 'r', encoding='utf8') as fs:
+            with codecs.open('model/pku_train_crfmodel.pkl', 'rb') as fm:
+                with codecs.open('baseline/contract_train_crf_states.txt', 'w') as fp:
+                    sm = fm.read()
+                    crf = pickle.loads(sm)
+                    lines = ft.readlines()
+                    states = fs.readlines()
+                    X = []
+                    counter = 0
+                    for line in lines:
+                        line = line.replace(" ", "").strip()
                         X.append([getFeaturesDict(line, i) for i in range(len(line))])
                         counter += 1
                         if counter % 100 == 0 and counter != 0:
