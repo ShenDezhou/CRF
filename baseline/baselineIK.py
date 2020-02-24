@@ -2,14 +2,6 @@ import codecs
 
 import elasticsearch
 
-# es = elasticsearch.Elasticsearch([{"host": "localhost", "port": 9200}])
-# body = {'text': "主体身份位高权重。犯罪嫌疑人中担任董事长、厂长、经理、党委书记职务的企业高层领导约占67％，负责销售、掌管财务的业务员、部门经理约占33％。", 'analyzer': "ik_smart"}
-# res = es.indices.analyze(index="cbooo_movie_v3", body=body)
-# print(res)
-# words = [w['token'] for w in res['tokens']]
-# print(words)
-# exit(1)
-
 es = elasticsearch.Elasticsearch([{"host": "localhost", "port": 9200}])
 
 
