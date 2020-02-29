@@ -8,19 +8,18 @@ from keras import regularizers
 from keras.layers import Dense, Embedding, LSTM, Dropout, Input, Bidirectional
 from keras.models import Model
 from keras.models import load_model
-from keras.optimizers import Adagrad
 from keras.preprocessing.sequence import pad_sequences
 
 #               precision    recall  f1-score   support
 #
-#            B     0.3381    0.3528    0.3453     56882
+#            B     0.3810    0.3958    0.3883     56882
 #            M     0.0000    0.0000    0.0000     11479
-#            E     0.3354    0.4322    0.3777     56882
-#            S     0.3145    0.2655    0.2880     47490
+#            E     0.3987    0.3649    0.3811     56882
+#            S     0.3908    0.5067    0.4412     47490
 #
-#     accuracy                         0.3315    172733
-#    macro avg     0.2470    0.2626    0.2527    172733
-# weighted avg     0.3083    0.3315    0.3173    172733
+#    micro avg     0.3898    0.3898    0.3898    172733
+#    macro avg     0.2926    0.3169    0.3026    172733
+# weighted avg     0.3642    0.3898    0.3747    172733
 # {'mean_squared_error': 0.2586491465518497, 'mean_absolute_error': 0.27396197698378544, 'mean_absolute_percentage_error': 0.3323864857505891, 'mean_squared_logarithmic_error': 0.2666326968685906, 'squared_hinge': 0.2827528866772688, 'hinge': 0.27436352076398335, 'categorical_crossentropy': 0.3050300775957548, 'binary_crossentropy': 0.7499999871882543, 'kullback_leibler_divergence': 0.30747676168440974, 'poisson': 0.2897763648871911, 'cosine_proximity': 0.3213321868358391, 'sgd': 0.27380688950156684, 'rmsprop': 0.4363407859974404, 'adagrad': 0.5028908227192664, 'adadelta': 0.3134481079882679, 'adam': 0.342444794579377, 'adamax': 0.36860069757644914, 'nadam': 0.39635284171196516}
 
 dicts = []
@@ -124,9 +123,9 @@ Dropoutrate = 0.2
 learningrate = 0.2
 Marginlossdiscount = 0.2
 nState = 4
-EPOCHS = 5
+EPOCHS = 1
 
-loss = "binary_crossentropy"
+loss = "cosine_proximity"
 optimizer = "rmsprop"
 sequence = Input(shape=(maxlen,))
 dropout = Dropout(rate=Dropoutrate)(sequence)
@@ -136,12 +135,13 @@ blstm = Bidirectional(LSTM(Hidden, return_sequences=True), merge_mode='sum')(emb
 dense = Dense(nState, activation='softmax', kernel_regularizer=regularizers.l2(Regularization))(blstm)
 model = Model(input=sequence, output=dense)
 # model.compile(loss='categorical_crossentropy', optimizer=adagrad, metrics=["accuracy"])
-optimizer = Adagrad(lr=learningrate)
+# optimizer = Adagrad(lr=learningrate)
 model.compile(loss=loss, optimizer=optimizer, metrics=["accuracy"])
+model.save("keras/lstm.h5")
 
 model.summary()
 
-MODE = 1
+MODE = 2
 
 if MODE == 1:
     with codecs.open('plain/pku_training.utf8', 'r', encoding='utf8') as ft:

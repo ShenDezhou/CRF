@@ -17,7 +17,7 @@ import elasticsearch
 
 es = elasticsearch.Elasticsearch([{"host": "localhost", "port": 9200}])
 
-MODE = 1
+MODE = 5
 if MODE == 1:
     analyzer = "hanlp_smart"
 
@@ -29,6 +29,9 @@ if MODE == 3:
 
 if MODE == 4:
     analyzer = "hanlp_nlp"
+
+if MODE == 5:
+    analyzer = "hanlp_a"
 
 
 def getHanLPStatesAndWords(sentence):

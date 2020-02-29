@@ -232,7 +232,7 @@ if MODE == 2:
     STATES = list("BMES")
     with codecs.open('plain/pku_test.utf8', 'r', encoding='utf8') as ft:
         with codecs.open('baseline/pku_test_lstm_states.txt', 'w', encoding='utf8') as fl:
-            model = load_model("keras/lstm.h5")
+            model = load_model("keras/lstm1.h5")
             model.summary()
 
             xlines = ft.readlines()
