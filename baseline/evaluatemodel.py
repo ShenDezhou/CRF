@@ -2,7 +2,7 @@ import codecs
 
 from sklearn_crfsuite import metrics
 
-MODE = 9
+MODE = 10
 
 GOLD = '../plain/pku_test_states.txt'
 
@@ -33,6 +33,8 @@ if MODE == 8:
 if MODE == 9:
     TEST = 'pku_test_lstm_states.txt'
 
+if MODE == 10:
+    TEST = 'pku_test_pkuseg_states.txt'
 
 with codecs.open(TEST, 'r', encoding='utf8') as fj:
     with codecs.open(GOLD, 'r', encoding='utf8') as fg:
