@@ -2,7 +2,7 @@ import codecs
 
 from sklearn_crfsuite import metrics
 
-MODE = 10
+MODE = 11
 
 GOLD = '../plain/pku_test_states.txt'
 
@@ -36,6 +36,9 @@ if MODE == 9:
 if MODE == 10:
     TEST = 'pku_test_pkuseg_states.txt'
 
+if MODE == 11:
+    TEST = 'pku_test_stanza_states.txt'
+
 with codecs.open(TEST, 'r', encoding='utf8') as fj:
     with codecs.open(GOLD, 'r', encoding='utf8') as fg:
         jstates = fj.readlines()
@@ -49,7 +52,7 @@ with codecs.open(TEST, 'r', encoding='utf8') as fj:
             jstate = jstate.strip()
             yp.append(list(jstate))
         for i in range(len(y)):
-            assert len(yp[i]) == len(y[i])
+            assert len(yp[i]) == len(y[i]), (i, len(y[i]), len(yp[i]))
         m = metrics.flat_classification_report(
             y, yp, labels=list("BMES"), digits=4
         )

@@ -1,7 +1,8 @@
 import codecs
 
-import jieba
+import stanza
 
+# import stanfordnlp
 #               precision    recall  f1-score   support
 #
 #            B     0.8952    0.8916    0.8934     56882
@@ -12,21 +13,28 @@ import jieba
 #    micro avg     0.8538    0.8538    0.8538    172733
 #    macro avg     0.7994    0.8466    0.8097    172733
 # weighted avg     0.8753    0.8538    0.8595    172733
+stanza.download('zh')
+nlp = stanza.Pipeline(lang="zh")  # This sets up a default neural pipeline in English
+
 with codecs.open('../plain/pku_test.utf8', 'r', encoding='utf8') as ft:
-    with codecs.open('pku_test_jieba.txt', 'w', encoding='utf8') as fj:
+    with codecs.open('pku_test_stanza.txt', 'w', encoding='utf8') as fj:
         lines = ft.readlines()
+
         for line in lines:
             line = line.strip()
-            words = jieba.lcut(line)
-            for w in words:
-                fj.write(w + "  ")
+            # _nlp = nlp(line)
+            # print(_nlp.sentences)
+            # print(_nlp.entities)
+            for s in nlp(line).sentences:
+                for w in s.words:
+                    fj.write(w.text + "  ")
             fj.write('\n')
 
 MODE = 1
 
 if MODE == 1:
-    INPUT = 'pku_test_jieba.txt'
-    OUTPUT = 'pku_test_jieba_states.txt'
+    INPUT = 'pku_test_stanza.txt'
+    OUTPUT = 'pku_test_stanza_states.txt'
 
 with codecs.open(OUTPUT, 'w', encoding='utf8') as wf:
     with codecs.open(INPUT, 'r', encoding='utf8') as f:
