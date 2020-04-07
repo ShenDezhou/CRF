@@ -13,6 +13,8 @@ import stanza
 #    micro avg     0.8538    0.8538    0.8538    172733
 #    macro avg     0.7994    0.8466    0.8097    172733
 # weighted avg     0.8753    0.8538    0.8595    172733
+
+# 百度网盘地址https://pan.baidu.com/s/1Qv3jUDTnRt43VE99qybjyA  提取码wf76  参考放置路径为C:\Users\Administrator\stanza_resources
 stanza.download('zh')
 nlp = stanza.Pipeline(lang="zh")  # This sets up a default neural pipeline in English
 
